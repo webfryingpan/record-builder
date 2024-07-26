@@ -1,7 +1,7 @@
 import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
-import { connectToDatabase, disconnectFromDatabase } from './database'
+import { connect, disconnect } from './database'
 import routes from './routes'
 
 dotenv.config()
@@ -14,7 +14,7 @@ app.use(express.json())
 app.use(routes)
 
 const startServer = async () => {
-	await connectToDatabase()
+	await connect()
 	app.listen(port, () => {
 		console.log(`Server running at http://localhost:${port}`)
 	})
@@ -23,6 +23,6 @@ const startServer = async () => {
 startServer()
 
 process.on('SIGINT', async () => {
-	await disconnectFromDatabase()
+	await disconnect()
 	process.exit(0)
 })

@@ -20,12 +20,6 @@ build/
 .vite/
 *.vite/
 
-# Prisma
-.prisma/
-db.sqlite
-*.prisma
-*.prisma-client
-
 # Environment variables
 .env
 .env.local

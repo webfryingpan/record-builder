@@ -2,7 +2,7 @@ import { Request, Response, Router } from 'express'
 import { decryptData, encryptData } from './encryption'
 import { parseHex } from './lib'
 import { getInspectors, getProblems, getProblemTypes, getProducts, saveRecord } from './services'
-import { IRecord } from './types'
+import type { IRecord } from './types'
 
 const router = Router()
 

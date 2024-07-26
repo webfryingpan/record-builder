@@ -1,7 +1,7 @@
 import { decryptData, encryptData } from './encryption'
 import { parseHex } from './lib'
 import { fetchData, saveRecord } from './service'
-import { SelectData } from './types'
+import type { SelectData } from './types'
 
 const saveBtn = document.querySelector('.save-data') as HTMLButtonElement
 const fetchBtn = document.querySelector('.fetch-data') as HTMLButtonElement

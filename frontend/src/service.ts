@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const URL = `http://${import.meta.env.VITE_BACKEND_URL}`
+const URL = `${import.meta.env.VITE_BACKEND_URL}`
 
 export const saveRecord = async (record: { encrypted: string }) => {
 	try {

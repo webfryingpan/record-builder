@@ -2,9 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import readline from 'readline'
 import prisma from './database'
-import { IRecord } from './types'
-
-const DATA_PATH = 'data'
+import type { IRecord } from './types'
 
 export const saveRecord = async (record: IRecord) => {
 	try {
@@ -21,7 +19,7 @@ const readFileLines = (filePath: string): Promise<string[]> => {
 	return new Promise((resolve, reject) => {
 		const lines: string[] = []
 		const rl = readline.createInterface({
-			input: fs.createReadStream(path.resolve(__dirname, DATA_PATH, filePath)),
+			input: fs.createReadStream(path.resolve(__dirname, 'data', filePath)),
 			crlfDelay: Infinity,
 		})
 
