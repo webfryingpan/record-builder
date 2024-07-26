@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="src/style.css" />
+		<link rel="shortcut icon" href="icon.png" type="image/x-icon" />
+		<title>Builder</title>
+	</head>
+	<body>
+		<div class="wrapper">
+			<header>
+				<div class="buttons">
+					<button class="save-data">Save data</button>
+					<button class="fetch-data">Fetch data</button>
+				</div>
+				<p class="status-code">Status code: <span></span></p>
+			</header>
+			<div class="container">
+				<div class="fields">
+					<div class="field">
+						<label class="label">Inspector</label>
+						<select class="property" name="inspector"></select>
+					</div>
+					<div class="field">
+						<label class="label">Product</label>
+						<select class="property" name="product"></select>
+					</div>
+					<div class="field">
+						<label class="label">Problem type</label>
+						<select class="property" name="problemType"></select>
+					</div>
+					<div class="field">
+						<label class="label">Problem</label>
+						<select class="property" name="problem"></select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="module" src="/src/main.ts"></script>
+	</body>
+</html>
