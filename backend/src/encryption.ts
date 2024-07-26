@@ -2,7 +2,7 @@ import CryptoJS from 'crypto-js'
 
 const secretKey = process.env.SECRET_KEY as string
 
-export const decryptData = (encrypted: string, iv: CryptoJS.lib.WordArray) => {
+export const decrypt = (encrypted: string, iv: CryptoJS.lib.WordArray) => {
 	return CryptoJS.enc.Utf8.stringify(
 		CryptoJS.AES.decrypt(encrypted, secretKey, {
 			iv: iv,
@@ -12,7 +12,7 @@ export const decryptData = (encrypted: string, iv: CryptoJS.lib.WordArray) => {
 	)
 }
 
-export const encryptData = (data: string): string => {
+export const encrypt = (data: string): string => {
 	const iv = CryptoJS.lib.WordArray.random(16)
 	const encrypted = CryptoJS.AES.encrypt(data, secretKey, {
 		iv: iv,

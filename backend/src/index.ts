@@ -13,14 +13,9 @@ app.use(cors())
 app.use(express.json())
 app.use(routes)
 
-const startServer = async () => {
-	await connect()
-	app.listen(port, () => {
-		console.log(`Server running at http://localhost:${port}`)
-	})
-}
-
-startServer()
+connect().then(() => {
+	app.listen(port, () => console.log(`Server running at http://localhost:${port}`))
+})
 
 process.on('SIGINT', async () => {
 	await disconnect()

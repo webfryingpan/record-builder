@@ -1,22 +1,29 @@
 import { Request, Response, Router } from 'express'
-import { decryptData, encryptData } from './encryption'
+import { decrypt, encrypt } from './encryption'
 import { parseHex } from './lib'
 import { getInspectors, getProblems, getProblemTypes, getProducts, saveRecord } from './services'
-import type { IRecord } from './types'
+import type { Record } from './types'
 
 const router = Router()
 
 router.post('/save', async (req: Request, res: Response) => {
-	const [ivHex, encrypted] = req.body.encrypted.split(':')
-	const iv = parseHex(ivHex)
-
 	try {
-		const record = JSON.parse(decryptData(encrypted, iv)) as IRecord
+		const [ivHex, encrypted] = req.body.encrypted.split(':')
+		const iv = parseHex(ivHex)
+
+		if (!iv || !encrypted) throw new Error('Incorrect request body')
+
+		const decrypted = decrypt(encrypted, iv)
+		const record = JSON.parse(decrypted) as Record
+
 		await saveRecord(record)
 		res.status(201).send('Saved record')
 	} catch (error) {
-		console.error('Error during decryption or saving:', error)
-		res.status(500).send('Error saving record')
+		if (error instanceof SyntaxError) res.status(400).send('Incorrect JSON data')
+		else if (error instanceof Error) res.status(500).send('Internal server error')
+		else res.status(500).send('Unexpected error')
+
+		console.error(error)
 	}
 })
 
@@ -30,7 +37,7 @@ router.get('/data', async (req: Request, res: Response) => {
 		])
 
 		res.status(200).json(
-			encryptData(
+			encrypt(
 				JSON.stringify({
 					inspectors,
 					products,
@@ -40,8 +47,8 @@ router.get('/data', async (req: Request, res: Response) => {
 			)
 		)
 	} catch (error) {
-		console.error('Error fetching data:', error)
-		res.status(500).send('Error fetching data')
+		console.error(error)
+		res.status(500).json({ message: 'Internal Server Error' })
 	}
 })
 

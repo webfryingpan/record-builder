@@ -1,11 +1,13 @@
-import { decryptData, encryptData } from './encryption'
+import { decrypt, encrypt } from './encryption'
 import { parseHex } from './lib'
 import { fetchData, saveRecord } from './service'
-import type { SelectData } from './types'
+import type { Options } from './types'
 
 const saveBtn = document.querySelector('.save-data') as HTMLButtonElement
 const fetchBtn = document.querySelector('.fetch-data') as HTMLButtonElement
 const statusCodeLabel = document.querySelector('.status-code span') as HTMLSpanElement
+
+let timeout: Timer
 
 const inspectorField = document.querySelector(`.property[name='inspector']`) as HTMLSelectElement
 const productField = document.querySelector(`.property[name='product']`) as HTMLSelectElement
@@ -14,71 +16,40 @@ const problemTypeField = document.querySelector(
 ) as HTMLSelectElement
 const problemField = document.querySelector(`.property[name='problem']`) as HTMLSelectElement
 
-const handleSaveClick = async () => {
-	try {
-		const data = JSON.stringify({
-			inspector: inspectorField.value,
-			problem: problemField.value,
-			problemType: problemTypeField.value,
-			product: productField.value,
-		})
-		const encryptedData = encryptData(data)
-
-		const status = await saveRecord({ encrypted: encryptedData })
-		statusCodeLabel.innerHTML = `${status}`
-		statusCodeLabel.style.color = status == 201 ? 'green' : 'red'
-	} catch (error) {
-		console.error('Error saving data:', error)
-	}
-}
-
-const addOptionsToFields = (data: SelectData) => {
+const fillFields = (data: Options) => {
 	clearFields()
-	addOptionsToField(inspectorField, data.inspectors)
-	addOptionsToField(problemField, data.problems)
-	addOptionsToField(problemTypeField, data.problemTypes)
-	addOptionsToField(productField, data.products)
+
+	addOptions(inspectorField, data.inspectors)
+	addOptions(problemField, data.problems)
+	addOptions(problemTypeField, data.problemTypes)
+	addOptions(productField, data.products)
 }
 
 const clearFields = () => {
-	const blankOption = '<option value="">None</option>'
-	inspectorField.innerHTML = blankOption
-	problemField.innerHTML = blankOption
-	problemTypeField.innerHTML = blankOption
-	productField.innerHTML = blankOption
+	const blank = '<option value="">None</option>'
+
+	inspectorField.innerHTML = blank
+	problemField.innerHTML = blank
+	problemTypeField.innerHTML = blank
+	productField.innerHTML = blank
 }
 
-const loadFromLocalStorage = () => {
+const loadLocal = () => {
 	const data = localStorage.getItem('data')
-	if (data) addOptionsToFields(JSON.parse(data))
+	if (data) fillFields(JSON.parse(data))
 }
 
-const handleFetchClick = async () => {
-	try {
-		const data = await fetchData()
-		const decryptedData = decryptAndParseData(data) as SelectData
+const parseData = (data: string) => {
+	const [ivHex, encrypted] = data.split(':')
+	const iv = parseHex(ivHex)
+	const decryptedString = decrypt(encrypted, iv)
 
-		addOptionsToFields(decryptedData)
-	} catch (error) {
-		console.error('Error fetching data:', error)
-	}
+	localStorage.setItem('data', decryptedString)
+
+	return JSON.parse(decryptedString) as Options
 }
 
-const decryptAndParseData = (data: string) => {
-	try {
-		const [ivHex, encrypted] = data.split(':')
-		const iv = parseHex(ivHex)
-		const decryptedString = decryptData(encrypted, iv)
-
-		localStorage.setItem('data', decryptedString)
-
-		return JSON.parse(decryptedString) as SelectData
-	} catch (error) {
-		if (error instanceof Error) throw new Error('Error decrypting data: ' + error.message)
-	}
-}
-
-const addOptionsToField = (field: HTMLSelectElement, values: string[]) => {
+const addOptions = (field: HTMLSelectElement, values: string[]) => {
 	values.forEach(value => {
 		const newOption = document.createElement('option')
 		newOption.innerHTML = value
@@ -87,8 +58,39 @@ const addOptionsToField = (field: HTMLSelectElement, values: string[]) => {
 	})
 }
 
+const updateStatusLabel = (status: number) => {
+	statusCodeLabel.innerHTML = status.toString()
+	statusCodeLabel.style.color = status == 201 || status == 200 ? 'green' : 'red'
+
+	if (timeout) clearTimeout(timeout)
+
+	timeout = setTimeout(() => {
+		statusCodeLabel.innerHTML = ''
+	}, 5000)
+}
+
+const handleSaveButton = async () => {
+	const data = JSON.stringify({
+		inspector: inspectorField.value,
+		problem: problemField.value,
+		problemType: problemTypeField.value,
+		product: productField.value,
+	})
+	const encrypted = encrypt(data)
+
+	await saveRecord({ encrypted }).then(status => updateStatusLabel(status))
+}
+
+const handleFetchButton = async () => {
+	const { data, status } = await fetchData()
+	const decryptedData = parseData(data) as Options
+
+	fillFields(decryptedData)
+	updateStatusLabel(status)
+}
+
 export const setupEventListeners = () => {
-	saveBtn?.addEventListener('click', handleSaveClick)
-	fetchBtn?.addEventListener('click', handleFetchClick)
-	document.addEventListener('DOMContentLoaded', loadFromLocalStorage)
+	saveBtn?.addEventListener('click', handleSaveButton)
+	fetchBtn?.addEventListener('click', handleFetchButton)
+	document.addEventListener('DOMContentLoaded', loadLocal)
 }

@@ -1,6 +1,6 @@
-export interface IRecord {
-	product: string
+export interface Record {
 	inspector: string
+	product: string
 	problemType: string
 	problem: string
 }
