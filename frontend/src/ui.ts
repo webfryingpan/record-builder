@@ -1,5 +1,3 @@
-import { decrypt, encrypt } from './encryption'
-import { parseHex } from './lib'
 import { fetchData, saveRecord } from './service'
 import type { Options } from './types'
 
@@ -10,7 +8,7 @@ const statusCodeLabel = document.querySelector('.status-code span') as HTMLSpanE
 let timeout: Timer
 
 const inspectorField = document.querySelector(`.property[name='inspector']`) as HTMLSelectElement
-const productField = document.querySelector(`.property[name='product']`) as HTMLSelectElement
+const productField = document.querySelector(`.property[name='board']`) as HTMLSelectElement
 const problemTypeField = document.querySelector(
 	`.property[name='problemType']`
 ) as HTMLSelectElement
@@ -22,7 +20,7 @@ const fillFields = (data: Options) => {
 	addOptions(inspectorField, data.inspectors)
 	addOptions(problemField, data.problems)
 	addOptions(problemTypeField, data.problemTypes)
-	addOptions(productField, data.products)
+	addOptions(productField, data.boards)
 }
 
 const clearFields = () => {
@@ -37,16 +35,6 @@ const clearFields = () => {
 const loadLocal = () => {
 	const data = localStorage.getItem('data')
 	if (data) fillFields(JSON.parse(data))
-}
-
-const parseData = (data: string) => {
-	const [ivHex, encrypted] = data.split(':')
-	const iv = parseHex(ivHex)
-	const decryptedString = decrypt(encrypted, iv)
-
-	localStorage.setItem('data', decryptedString)
-
-	return JSON.parse(decryptedString) as Options
 }
 
 const addOptions = (field: HTMLSelectElement, values: string[]) => {
@@ -70,22 +58,18 @@ const updateStatusLabel = (status: number) => {
 }
 
 const handleSaveButton = async () => {
-	const data = JSON.stringify({
-		inspector: inspectorField.value,
-		problem: problemField.value,
+	await saveRecord({
+		inspectorName: inspectorField.value,
+		problemDescription: problemField.value,
 		problemType: problemTypeField.value,
-		product: productField.value,
-	})
-	const encrypted = encrypt(data)
-
-	await saveRecord({ encrypted }).then(status => updateStatusLabel(status))
+		boardId: productField.value,
+	}).then(status => updateStatusLabel(status))
 }
 
 const handleFetchButton = async () => {
 	const { data, status } = await fetchData()
-	const decryptedData = parseData(data) as Options
 
-	fillFields(decryptedData)
+	fillFields(data)
 	updateStatusLabel(status)
 }
 

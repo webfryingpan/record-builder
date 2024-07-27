@@ -1,13 +1,22 @@
 const path = require('path')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
 	mode: 'production',
 	entry: './src/index.ts',
 	target: 'node',
+	plugins: [
+		new CopyWebpackPlugin({
+			patterns: [
+				{ from: 'src/data', to: 'data' },
+				{ from: 'src/secret', to: 'secret' },
+			],
+		}),
+	],
 	module: {
 		rules: [
 			{
-				test: /\.ts$/,
+				test: /\.tsx?$/,
 				use: [
 					{
 						loader: 'ts-loader',

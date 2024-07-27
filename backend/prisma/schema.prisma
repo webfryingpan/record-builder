@@ -1,6 +1,6 @@
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+  binaryTargets = "native"
 }
 
 datasource db {
@@ -8,11 +8,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Record {
-  id          Int      @id @default(autoincrement())
-  inspector   String
-  product     String
-  problemType String
-  problem     String
-  createdAt   DateTime @default(now())
+model BoardInspection {
+  id                 Int      @id @default(autoincrement())
+  date               DateTime @default(now())
+  inspectorName      String
+  boardId            String
+  problemType        String
+  problemDescription String
+}
+
+model BoardInventory {
+  id       Int      @id @default(autoincrement())
+  date     DateTime
+  quantity Int
+  boardId  String
 }

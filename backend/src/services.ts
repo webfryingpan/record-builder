@@ -2,14 +2,18 @@ import fs from 'fs'
 import path from 'path'
 import readline from 'readline'
 import prisma from './database'
-import type { Record } from './types'
+import type { BoardInspectionType } from './types'
 
-export const saveRecord = async (record: Record) => {
-	await prisma.record.create({
-		data: record,
-	})
+export const saveRecord = async (record: BoardInspectionType) => {
+	try {
+		await prisma.boardInspection.create({
+			data: record,
+		})
+	} catch (error) {
+		console.error('Error saving record:', error)
+		throw error
+	}
 }
-
 const readFileLines = (filePath: string): Promise<string[]> => {
 	return new Promise((resolve, reject) => {
 		try {

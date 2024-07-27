@@ -1,6 +1,8 @@
-export interface Record {
-	inspector: string
-	product: string
+interface BoardInspectionType {
+	inspectorName: string
+	boardId: string
 	problemType: string
-	problem: string
+	problemDescription: string
 }
+
+export type { BoardInspectionType }
