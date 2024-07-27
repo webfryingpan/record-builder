@@ -1,21 +1,19 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios'
-import type { BoardInspectionType, BoardInventoryType, Options } from './types'
+import type { ApiResponse, BoardInspectionType, BoardInventoryType, Options } from './types'
 
 const apiClient: AxiosInstance = axios.create({
-	baseURL: import.meta.env.PUBLIC_BACKEND_URL,
+	baseURL: import.meta.env.PUBLIC_SERVER_URL,
 })
 
-interface ApiResponse<T = Options | BoardInspectionType | BoardInventoryType> {
-	data: T
-	status: number
-}
-
 export const saveBoardInspection = async (
-	record: BoardInspectionType
-): Promise<ApiResponse<BoardInspectionType>> => {
+	record: BoardInspectionType,
+	worker: number
+): Promise<ApiResponse> => {
 	try {
-		const response: AxiosResponse = await apiClient.post('/api/inspection', record)
-		return { data: response.data, status: response.status }
+		if (!(worker == 1 || worker == 2)) return { status: 400 }
+
+		const response: AxiosResponse = await apiClient.post(`/api/inspection/${worker}`, record)
+		return { status: response.status }
 	} catch (error) {
 		console.error('Error saving board inspection:', error)
 		throw new Error('Failed to save board inspection.')
@@ -23,11 +21,14 @@ export const saveBoardInspection = async (
 }
 
 export const saveBoardInventory = async (
-	record: BoardInventoryType
-): Promise<ApiResponse<BoardInventoryType>> => {
+	record: BoardInventoryType,
+	worker: number
+): Promise<ApiResponse> => {
 	try {
-		const response: AxiosResponse = await apiClient.post('/api/inventory', record)
-		return { data: response.data, status: response.status }
+		if (!(worker == 1 || worker == 2)) return { status: 400 }
+
+		const response: AxiosResponse = await apiClient.post(`/api/inventory/${worker}`, record)
+		return { status: response.status }
 	} catch (error) {
 		console.error('Error saving board inventory:', error)
 		throw new Error('Failed to save board inventory.')

@@ -7,51 +7,108 @@
 		<link rel="shortcut icon" href="icon.png" type="image/x-icon" />
 		<title>BoardManager</title>
 	</head>
-	<body>
-		<div class="wrapper">
-			<header>
-				<button class="btn fetch-data">Fetch options</button>
-				<p class="status-code">Status code: <span></span></p>
-			</header>
-			<div class="container">
-				<div class="fields">
-					<div class="fieldset inspection">
-						<button class="btn save-inspection">Save board inspection</button>
-						<div class="field">
-							<label class="label">Date, week: <span></span></label>
-							<input class="input" type="date" name="date" />
-						</div>
-						<div class="field">
-							<label class="label">Inspector</label>
-							<select class="input select" name="inspector"></select>
-						</div>
-						<div class="field">
-							<label class="label">Board</label>
-							<select class="input select" name="board"></select>
-						</div>
-						<div class="field">
-							<label class="label">Problem type</label>
-							<select class="input select" name="problemType"></select>
-						</div>
-						<div class="field">
-							<label class="label">Problem</label>
-							<select class="input select" name="problem"></select>
-						</div>
+	<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+		<div class="wrapper w-full max-w-4xl bg-white shadow-md rounded-lg p-6">
+			<header class="mb-6 flex flex-col md:flex-row items-start md:items-center justify-between">
+				<div class="flex items-center">
+					<button class="fetch-data bg-blue-500 text-white px-4 py-2 rounded mr-4">
+						Fetch options
+					</button>
+					<div class="field mb-4 md:mb-0">
+						<label for="worker" class="label block text-gray-700 mb-2">Worker</label>
+						<input
+							id="worker"
+							class="input no-spin form-input w-full border border-gray-300 rounded"
+							type="number"
+							name="worker"
+							min="1"
+						/>
 					</div>
-					<div class="fieldset inventory">
-						<button class="btn save-inventory">Save inventory</button>
-						<div class="field">
-							<label class="label">Date, week: <span></span></label>
-							<input class="input" type="date" name="date" />
-						</div>
-						<div class="field">
-							<label class="label">Board</label>
-							<select class="input select" name="board"></select>
-						</div>
-						<div class="field">
-							<label class="label">Quantity</label>
-							<input class="input" type="number" name="quantity" value="0" />
-						</div>
+				</div>
+				<p class="status-code mt-2 text-gray-600">Status code: <span></span></p>
+			</header>
+			<div class="fields grid grid-cols-1 md:grid-cols-2 gap-6">
+				<div class="fieldset inspection p-4 border border-gray-200 rounded">
+					<button class="save-inspection bg-green-500 text-white px-4 py-2 rounded mb-4">
+						Save board inspection
+					</button>
+					<div class="field mb-4">
+						<label for="inspection-date" class="label block text-gray-700 mb-2"
+							>Date, week: <span></span
+						></label>
+						<input
+							id="inspection-date"
+							class="input form-input w-full border border-gray-300 rounded"
+							type="date"
+							name="date"
+						/>
+					</div>
+					<div class="field mb-4">
+						<label for="inspector" class="label block text-gray-700 mb-2">Inspector</label>
+						<select
+							id="inspector"
+							class="input select form-select w-full border border-gray-300 rounded"
+							name="inspector"
+						></select>
+					</div>
+					<div class="field mb-4">
+						<label for="inspection-board" class="label block text-gray-700 mb-2">Board</label>
+						<select
+							id="inspection-board"
+							class="input select form-select w-full border border-gray-300 rounded"
+							name="board"
+						></select>
+					</div>
+					<div class="field mb-4">
+						<label for="problem-type" class="label block text-gray-700 mb-2">Problem type</label>
+						<select
+							id="problem-type"
+							class="input select form-select w-full border border-gray-300 rounded"
+							name="problemType"
+						></select>
+					</div>
+					<div class="field mb-4">
+						<label for="problem" class="label block text-gray-700 mb-2">Problem</label>
+						<select
+							id="problem"
+							class="input select form-select w-full border border-gray-300 rounded"
+							name="problem"
+						></select>
+					</div>
+				</div>
+				<div class="fieldset inventory p-4 border border-gray-200 rounded">
+					<button class="save-inventory bg-green-500 text-white px-4 py-2 rounded mb-4">
+						Save inventory
+					</button>
+					<div class="field mb-4">
+						<label for="inventory-date" class="label block text-gray-700 mb-2"
+							>Date, week: <span></span
+						></label>
+						<input
+							id="inventory-date"
+							class="input form-input w-full border border-gray-300 rounded"
+							type="date"
+							name="date"
+						/>
+					</div>
+					<div class="field mb-4">
+						<label for="inventory-board" class="label block text-gray-700 mb-2">Board</label>
+						<select
+							id="inventory-board"
+							class="input select form-select w-full border border-gray-300 rounded"
+							name="board"
+						></select>
+					</div>
+					<div class="field mb-4">
+						<label for="quantity" class="label block text-gray-700 mb-2">Quantity</label>
+						<input
+							id="quantity"
+							class="input no-spin form-input w-full border border-gray-300 rounded"
+							type="number"
+							name="quantity"
+							min="0"
+							value="0"
+						/>
 					</div>
 				</div>
 			</div>

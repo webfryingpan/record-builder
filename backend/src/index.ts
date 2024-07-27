@@ -7,15 +7,15 @@ import routes from './routes'
 dotenv.config()
 
 const app = express()
-const port = +process.env.SERVER_PORT! || 443
+const port = +process.env.SERVER_PORT! || 3002
 
 app.use(cors())
 app.use(express.json())
 app.use(routes)
 
 connect().then(() =>
-	app.listen(port, '0.0.0.0', () => {
-		console.log(`HTTPS server is running on port ${port}`)
+	app.listen(port, () => {
+		console.log(`HTTP server is running on localhost:${port}`)
 	})
 )
 

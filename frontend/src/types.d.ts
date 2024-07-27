@@ -21,4 +21,9 @@ interface BoardInventoryType {
 	board: string
 }
 
-export type { BoardInspectionType, BoardInventoryType, Options }
+interface ApiResponse<T = Options> {
+	data?: T
+	status: number
+}
+
+export type { ApiResponse, BoardInspectionType, BoardInventoryType, Options }

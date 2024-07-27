@@ -3,18 +3,23 @@ import path from 'path'
 import prisma from './database'
 import type { BoardInspectionType, BoardInventoryType } from './types'
 
-export const saveInspection = async (record: BoardInspectionType): Promise<void> => {
+export const saveInspection = async (
+	record: BoardInspectionType,
+	worker: number
+): Promise<void> => {
 	try {
-		await prisma.boardInspection.create({ data: record })
+		if (worker == 1) await prisma.boardInspection1.create({ data: record })
+		else if (worker == 2) await prisma.boardInspection2.create({ data: record })
 	} catch (error) {
 		console.error('Error saving board inspection record:', error)
 		throw new Error('Failed to save board inspection record')
 	}
 }
 
-export const saveInventory = async (record: BoardInventoryType): Promise<void> => {
+export const saveInventory = async (record: BoardInventoryType, worker: number): Promise<void> => {
 	try {
-		await prisma.boardInventory.create({ data: record })
+		if (worker == 1) await prisma.boardInventory1.create({ data: record })
+		else if (worker == 2) await prisma.boardInventory2.create({ data: record })
 	} catch (error) {
 		console.error('Error saving board inventory record:', error)
 		throw new Error('Failed to save board inventory record')

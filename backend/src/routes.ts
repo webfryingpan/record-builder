@@ -6,15 +6,15 @@ import {
 	getProblemTypes,
 	saveInspection,
 	saveInventory,
-} from './services'
+} from './service'
 import type { BoardInspectionType, BoardInventoryType } from './types'
 
 const router = Router()
 
-router.post('/api/inspection', async (req: Request, res: Response) => {
+router.post('/api/inspection/:id', async (req: Request, res: Response) => {
 	try {
 		const record: BoardInspectionType = req.body
-		await saveInspection(record)
+		await saveInspection(record, +req.params.id)
 		res.status(201).send('Record saved successfully')
 	} catch (error) {
 		console.error('Error saving inspection record:', error)
@@ -22,10 +22,10 @@ router.post('/api/inspection', async (req: Request, res: Response) => {
 	}
 })
 
-router.post('/api/inventory', async (req: Request, res: Response) => {
+router.post('/api/inventory/:id', async (req: Request, res: Response) => {
 	try {
 		const record: BoardInventoryType = req.body
-		await saveInventory(record)
+		await saveInventory(record, +req.params.id)
 		res.status(201).send('Record saved successfully')
 	} catch (error) {
 		console.error('Error saving inventory record:', error)
