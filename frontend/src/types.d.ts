@@ -6,10 +6,19 @@ interface Options {
 }
 
 interface BoardInspectionType {
+	date: Date
+	week: number
 	inspectorName: string
-	boardId: string
+	board: string
 	problemType: string
 	problemDescription: string
 }
 
-export type { BoardInspectionType, Options }
+interface BoardInventoryType {
+	date: Date
+	week: number
+	quantity: number
+	board: string
+}
+
+export type { BoardInspectionType, BoardInventoryType, Options }

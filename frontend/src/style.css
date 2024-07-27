@@ -4,87 +4,85 @@
 	box-sizing: border-box;
 }
 
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
 body {
 	font-family: sans-serif;
-	background: #000;
+	background: #e3e4f0;
 }
 
 header {
-	width: 80%;
-	color: #fff;
-	height: 10vh;
-	display: flex;
-	align-items: center;
+	display: grid;
+	grid-auto-flow: column;
 	column-gap: 40px;
+	align-items: center;
+	grid-template-columns: repeat(6, 1fr);
+	grid-template-rows: 10vh;
+	width: 80%;
 	margin: 0 auto;
+	position: relative;
 }
 
-.status-code {
-	font-size: 1.3rem;
-}
-
-.buttons {
-	display: flex;
-	column-gap: 20px;
-}
-
-.save-data,
 .fetch-data {
-	cursor: pointer;
-	border: 2px solid #fff;
-	border-radius: 5px;
-	font-weight: 600;
-	background: none;
-	color: #fff;
-	padding: 10px 25px;
-	font-size: 1.1rem;
-	transition: 0.5s;
-	outline: none;
-}
-
-.save-data:hover,
-.fetch-data:hover {
-	background: #fff;
-	border: 2px solid #000;
-	color: #000;
+	height: 5vh;
 }
 
 .container {
 	width: 80%;
-	color: #fff;
 	margin: 0 auto;
-	font-size: 1.4rem;
-	height: 90vh;
 }
 
 .fields {
-	margin: 0 auto;
-	display: flex;
-	flex-direction: row;
+	display: grid;
+	grid-template-rows: repeat(2, 1fr);
+	row-gap: 50px;
+}
+
+.fieldset {
+	display: grid;
+	grid-auto-flow: column;
 	column-gap: 40px;
+	grid-template-columns: repeat(6, 1fr);
+	grid-template-rows: 5vh;
 }
 
 .field {
 	display: flex;
 	flex-direction: column;
-	width: 25%;
-	row-gap: 10px;
+	align-items: flex-start;
 }
 
-option {
-	background: #000;
+.label,
+.input {
+	width: 100%;
+}
+
+.input {
+	height: 100%;
+	border: 1px solid #000;
+	border-radius: 5px;
+	padding-left: 10px;
+	color: #000;
 	outline: none;
 }
 
-.property {
+.btn {
+	font-size: 1.2rem;
+	cursor: pointer;
+}
+
+select {
 	-moz-appearance: none;
 	-webkit-appearance: none;
-	cursor: pointer;
-	appearance: none;
-	border: 2px solid #fff;
-	padding: 10px 5px;
-	border-radius: 5px;
-	outline: none;
-	color: #fff;
-	background: none;
+}
+
+.status-code {
+	position: absolute;
+	font-size: 1.5rem;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }

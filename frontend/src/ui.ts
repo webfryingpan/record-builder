@@ -1,35 +1,55 @@
-import { fetchData, saveRecord } from './service'
+import { getWeekNumber } from './lib'
+import { fetchOptions, saveBoardInspection, saveBoardInventory } from './service'
 import type { Options } from './types'
 
-const saveBtn = document.querySelector('.save-data') as HTMLButtonElement
-const fetchBtn = document.querySelector('.fetch-data') as HTMLButtonElement
-const statusCodeLabel = document.querySelector('.status-code span') as HTMLSpanElement
+let timeout: ReturnType<typeof setTimeout>
 
-let timeout: Timer
+const saveInspectionBtn = document.querySelector<HTMLButtonElement>('.save-inspection')
+const saveInventoryBtn = document.querySelector<HTMLButtonElement>('.save-inventory')
+const fetchOptionsBtn = document.querySelector<HTMLButtonElement>('.fetch-data')
+const statusCodeLabel = document.querySelector<HTMLSpanElement>('.status-code span')
 
-const inspectorField = document.querySelector(`.property[name='inspector']`) as HTMLSelectElement
-const productField = document.querySelector(`.property[name='board']`) as HTMLSelectElement
-const problemTypeField = document.querySelector(
-	`.property[name='problemType']`
-) as HTMLSelectElement
-const problemField = document.querySelector(`.property[name='problem']`) as HTMLSelectElement
+namespace inspection {
+	const prefix = '.inspection'
 
-const fillFields = (data: Options) => {
-	clearFields()
-
-	addOptions(inspectorField, data.inspectors)
-	addOptions(problemField, data.problems)
-	addOptions(problemTypeField, data.problemTypes)
-	addOptions(productField, data.boards)
+	export const dateField = document.querySelector<HTMLInputElement>(
+		`${prefix} .field .input[name='date']`
+	)
+	export const inspectorField = document.querySelector<HTMLSelectElement>(
+		`${prefix} .field .input[name='inspector']`
+	)
+	export const boardField = document.querySelector<HTMLSelectElement>(
+		`${prefix} .field .input[name='board']`
+	)
+	export const problemTypeField = document.querySelector<HTMLSelectElement>(
+		`${prefix} .field .input[name='problemType']`
+	)
+	export const problemField = document.querySelector<HTMLSelectElement>(
+		`${prefix} .field .input[name='problem']`
+	)
 }
 
-const clearFields = () => {
-	const blank = '<option value="">None</option>'
+namespace inventory {
+	const prefix = '.inventory'
 
-	inspectorField.innerHTML = blank
-	problemField.innerHTML = blank
-	problemTypeField.innerHTML = blank
-	productField.innerHTML = blank
+	export const dateField = document.querySelector<HTMLInputElement>(
+		`${prefix} .field .input[name='date']`
+	)
+	export const boardField = document.querySelector<HTMLSelectElement>(
+		`${prefix} .field .input[name='board']`
+	)
+	export const quantityField = document.querySelector<HTMLInputElement>(
+		`${prefix} .field .input[name='quantity']`
+	)
+}
+
+const fillFields = (data: Options) => {
+	setOptions(inspection.inspectorField, data.inspectors)
+	setOptions(inspection.boardField, data.boards)
+	setOptions(inspection.problemField, data.problems)
+	setOptions(inspection.problemTypeField, data.problemTypes)
+
+	setOptions(inventory.boardField, data.boards)
 }
 
 const loadLocal = () => {
@@ -37,44 +57,122 @@ const loadLocal = () => {
 	if (data) fillFields(JSON.parse(data))
 }
 
-const addOptions = (field: HTMLSelectElement, values: string[]) => {
+const setOptions = (field: HTMLSelectElement | null, values: string[]) => {
+	if (!field) return
+
+	field.innerHTML = '<option value="">None</option>'
+
 	values.forEach(value => {
-		const newOption = document.createElement('option')
-		newOption.innerHTML = value
-		newOption.value = value
-		field.appendChild(newOption)
+		const option = document.createElement('option')
+		option.value = value
+		option.textContent = value
+		field.appendChild(option)
 	})
 }
 
 const updateStatusLabel = (status: number) => {
-	statusCodeLabel.innerHTML = status.toString()
-	statusCodeLabel.style.color = status == 201 || status == 200 ? 'green' : 'red'
+	if (!statusCodeLabel) return
+
+	statusCodeLabel.textContent = status.toString()
+	statusCodeLabel.style.color = status === 201 || status === 200 ? 'green' : 'red'
 
 	if (timeout) clearTimeout(timeout)
 
 	timeout = setTimeout(() => {
-		statusCodeLabel.innerHTML = ''
+		statusCodeLabel.textContent = ''
 	}, 5000)
 }
 
-const handleSaveButton = async () => {
-	await saveRecord({
-		inspectorName: inspectorField.value,
-		problemDescription: problemField.value,
-		problemType: problemTypeField.value,
-		boardId: productField.value,
-	}).then(status => updateStatusLabel(status))
+const handleInspectionBtn = async () => {
+	if (
+		inspection.dateField &&
+		inspection.inspectorField &&
+		inspection.boardField &&
+		inspection.problemTypeField &&
+		inspection.problemField
+	) {
+		const date = new Date(inspection.dateField.value)
+
+		try {
+			await saveBoardInspection({
+				date,
+				week: getWeekNumber(date),
+				inspectorName: inspection.inspectorField.value,
+				board: inspection.boardField.value,
+				problemType: inspection.problemTypeField.value,
+				problemDescription: inspection.problemField.value,
+			}).then(({ status }) => updateStatusLabel(status))
+		} catch (error) {
+			console.error('Error saving board inspection:', error)
+			updateStatusLabel(500)
+		}
+	}
+}
+
+const handleInventoryBtn = async () => {
+	if (inventory.dateField && inventory.boardField && inventory.quantityField) {
+		const date = new Date(inventory.dateField.value)
+
+		try {
+			await saveBoardInventory({
+				date,
+				week: getWeekNumber(date),
+				board: inventory.boardField.value,
+				quantity: +inventory.quantityField.value,
+			}).then(({ status }) => updateStatusLabel(status))
+		} catch (error) {
+			console.error('Error saving board inventory:', error)
+			updateStatusLabel(500)
+		}
+	}
 }
 
 const handleFetchButton = async () => {
-	const { data, status } = await fetchData()
+	try {
+		const { data, status } = await fetchOptions()
+		localStorage.setItem('data', JSON.stringify(data))
+		fillFields(data)
+		updateStatusLabel(status)
+	} catch (error) {
+		console.error('Error fetching options:', error)
+		updateStatusLabel(500)
+	}
+}
 
-	fillFields(data)
-	updateStatusLabel(status)
+const setTodayDate = () => {
+	const today = new Date().toISOString().split('T')[0]
+	if (inspection.dateField) inspection.dateField.value = today
+	if (inventory.dateField) inventory.dateField.value = today
+}
+
+const updateWeekLabel = (selectorPrefix: string, dateField: HTMLInputElement | null) => {
+	if (!dateField) return
+	const weekNumber = getWeekNumber(new Date(dateField.value)).toString()
+	const label = document.querySelector<HTMLSpanElement>(`${selectorPrefix} .field .label span`)
+	if (label) label.textContent = weekNumber
+}
+
+const setWeek = () => {
+	updateWeekLabel('.inspection', inspection.dateField)
+	updateWeekLabel('.inventory', inventory.dateField)
 }
 
 export const setupEventListeners = () => {
-	saveBtn?.addEventListener('click', handleSaveButton)
-	fetchBtn?.addEventListener('click', handleFetchButton)
-	document.addEventListener('DOMContentLoaded', loadLocal)
+	saveInspectionBtn?.addEventListener('click', handleInspectionBtn)
+	saveInventoryBtn?.addEventListener('click', handleInventoryBtn)
+	fetchOptionsBtn?.addEventListener('click', handleFetchButton)
+
+	inspection.dateField?.addEventListener('change', () =>
+		updateWeekLabel('.inspection', inspection.dateField)
+	)
+
+	inventory.dateField?.addEventListener('change', () =>
+		updateWeekLabel('.inventory', inventory.dateField)
+	)
+
+	document.addEventListener('DOMContentLoaded', () => {
+		loadLocal()
+		setTodayDate()
+		setWeek()
+	})
 }

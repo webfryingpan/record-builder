@@ -10,29 +10,48 @@
 	<body>
 		<div class="wrapper">
 			<header>
-				<div class="buttons">
-					<button class="save-data">Save data</button>
-					<button class="fetch-data">Fetch data</button>
-				</div>
+				<button class="btn fetch-data">Fetch options</button>
 				<p class="status-code">Status code: <span></span></p>
 			</header>
 			<div class="container">
 				<div class="fields">
-					<div class="field">
-						<label class="label">Inspector</label>
-						<select class="property" name="inspector"></select>
+					<div class="fieldset inspection">
+						<button class="btn save-inspection">Save board inspection</button>
+						<div class="field">
+							<label class="label">Date, week: <span></span></label>
+							<input class="input" type="date" name="date" />
+						</div>
+						<div class="field">
+							<label class="label">Inspector</label>
+							<select class="input select" name="inspector"></select>
+						</div>
+						<div class="field">
+							<label class="label">Board</label>
+							<select class="input select" name="board"></select>
+						</div>
+						<div class="field">
+							<label class="label">Problem type</label>
+							<select class="input select" name="problemType"></select>
+						</div>
+						<div class="field">
+							<label class="label">Problem</label>
+							<select class="input select" name="problem"></select>
+						</div>
 					</div>
-					<div class="field">
-						<label class="label">Board</label>
-						<select class="property" name="board"></select>
-					</div>
-					<div class="field">
-						<label class="label">Problem type</label>
-						<select class="property" name="problemType"></select>
-					</div>
-					<div class="field">
-						<label class="label">Problem</label>
-						<select class="property" name="problem"></select>
+					<div class="fieldset inventory">
+						<button class="btn save-inventory">Save inventory</button>
+						<div class="field">
+							<label class="label">Date, week: <span></span></label>
+							<input class="input" type="date" name="date" />
+						</div>
+						<div class="field">
+							<label class="label">Board</label>
+							<select class="input select" name="board"></select>
+						</div>
+						<div class="field">
+							<label class="label">Quantity</label>
+							<input class="input" type="number" name="quantity" value="0" />
+						</div>
 					</div>
 				</div>
 			</div>

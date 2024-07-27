@@ -7,10 +7,7 @@ module.exports = {
 	target: 'node',
 	plugins: [
 		new CopyWebpackPlugin({
-			patterns: [
-				{ from: 'src/data', to: 'data' },
-				{ from: 'src/secret', to: 'secret' },
-			],
+			patterns: [{ from: 'src/data', to: 'data' }],
 		}),
 	],
 	module: {

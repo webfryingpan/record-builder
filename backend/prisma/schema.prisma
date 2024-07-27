@@ -11,15 +11,17 @@ datasource db {
 model BoardInspection {
   id                 Int      @id @default(autoincrement())
   date               DateTime @default(now())
+  week               Int
   inspectorName      String
-  boardId            String
+  board              String
   problemType        String
   problemDescription String
 }
 
 model BoardInventory {
   id       Int      @id @default(autoincrement())
-  date     DateTime
+  date     DateTime @default(now())
+  week     Int
   quantity Int
-  boardId  String
+  board    String
 }
