@@ -1,15 +1,19 @@
-FROM node:18-alpine
+FROM node:18-alpine AS base
+WORKDIR /usr/src/app
 
-WORKDIR /app
+FROM base AS install
+RUN mkdir -p /temp/dev
+COPY package.json /temp/dev/
+RUN cd /temp/dev && yarn
 
-COPY package.json ./
-
-RUN npm install
-
+FROM base AS build
 COPY . .
+COPY --from=install /temp/dev/node_modules node_modules
+RUN yarn run build
 
-RUN npm run build
+FROM base AS release
+COPY --from=build /usr/src/app/dist/ release/
 
 EXPOSE 3000
 
-CMD ["npm", "run", "prod"]
+CMD ["npx", "serve", "release"]

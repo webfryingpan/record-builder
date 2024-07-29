@@ -32,6 +32,7 @@ services:
       - db
     environment:
       DATABASE_URL: postgres://user:password@db:5432/mydb
+      SERVER_PORT: 3002
     ports:
       - '3002:3002'
 
