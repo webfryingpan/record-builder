@@ -27,7 +27,7 @@ services:
   backend:
     build:
       context: ./backend
-    container_name: builder-backend
+    container_name: board-manager-backend
     depends_on:
       - db
     environment:
@@ -39,11 +39,13 @@ services:
   frontend:
     build:
       context: ./frontend
-    container_name: builder-frontend
+    container_name: board-manager-frontend
     ports:
       - '3000:3000'
     depends_on:
       - backend
+    environment:
+      SERVER_PORT: 3002
 
 volumes:
   postgres_data:

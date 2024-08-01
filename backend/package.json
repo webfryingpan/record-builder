@@ -1,8 +1,9 @@
 {
 	"scripts": {
-		"dev": "bun --hot run ./src/index.ts",
 		"build": "esbuild src/index.ts --bundle --platform=node --packages=bundle --outfile=dist/index.cjs --minify",
-		"prod": "node dist/index.cjs"
+		"start:dev": "bun --hot run ./src/index.ts",
+		"start:prod": "node dist/index.cjs",
+		"start:migration:prod": "npx prisma migrate deploy && npm run start:prod"
 	},
 	"name": "backend",
 	"private": true,

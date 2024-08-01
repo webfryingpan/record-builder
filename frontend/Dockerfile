@@ -1,18 +1,18 @@
 FROM node:18-alpine AS base
 WORKDIR /usr/src/app
 
-FROM base AS install
-RUN mkdir -p /temp/dev
-COPY package.json /temp/dev/
-RUN cd /temp/dev && yarn
+FROM base AS dependencies
+COPY package.json ./
+RUN yarn install
 
 FROM base AS build
 COPY . .
-COPY --from=install /temp/dev/node_modules node_modules
-RUN yarn run build
+COPY --from=dependencies /usr/src/app/node_modules ./node_modules
+RUN yarn build
 
-FROM base AS release
-COPY --from=build /usr/src/app/dist/ release/
+FROM node:18-alpine AS release
+WORKDIR /usr/src/app
+COPY --from=build /usr/src/app/dist ./release/
 
 EXPOSE 3000
 
