@@ -1,8 +1,8 @@
 {
 	"scripts": {
-		"dev": "vite",
 		"build": "tsc && vite build",
-		"prod": "serve dist"
+		"start:dev": "vite",
+		"start:prod": "serve dist"
 	},
 	"name": "frontend",
 	"private": true,
@@ -17,6 +17,7 @@
 		"postcss": "^8.4.40",
 		"tailwindcss": "^3.4.7",
 		"typescript": "^5.5.4",
-		"vite": "^5.3.5"
+		"vite": "^5.3.5",
+		"vite-tsconfig-paths": "^4.3.2"
 	}
 }
