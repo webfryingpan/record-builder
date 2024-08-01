@@ -20,7 +20,7 @@ COPY --from=prod-dependencies /usr/src/app/node_modules ./node_modules
 COPY prisma prisma
 COPY --from=prod-dependencies /usr/src/app/package.json ./
 COPY --from=build /usr/src/app/dist/index.cjs ./dist/
-COPY --from=build /usr/src/app/src/data ./dist/data
+COPY --from=build /usr/src/app/src/data ./data
 
 EXPOSE ${SERVER_PORT}
 

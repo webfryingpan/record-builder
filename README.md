@@ -44,23 +44,29 @@ docker-compose build
 docker-compose up
 ```
 
-### 6. Migrate the Database
-
-After the containers are up and running, run the following command to apply database migrations:
-
-```bash
-docker exec builder-backend npx prisma migrate dev --name init
-```
-
-### 7. Congratulations!
+### 7. Congratulations
 
 Your project should now be up and running.
+
+## Updating the app
+
+### 1. Pull from repository
+
+```bash
+git pull
+```
+
+### 2. Build
+
+```bash
+docker-compose build
+```
 
 ## Additional Information
 
 ### Accessing the Application
 
-The application should be accessible at `http://YOUR_IP:PORT`, where `PORT` is defined in your `.env` file and where `YOUR_IP` is your IP.
+The application should be accessible at `http://localhost:PORT` or at `http://YOUR_IP:PORT`
 
 ## Troubleshooting
 
@@ -72,8 +78,4 @@ The application should be accessible at `http://YOUR_IP:PORT`, where `PORT` is d
 
   Double-check that all required environment variables are set correctly in the .env files.
 
-- Database Migrations
-
-  Ensure the database container is running before executing the migration command.
-
-For further assistance, please refer to the project's issues section or contact the maintainers.
+For further assistance, please refer to the project's issues section or contact me.

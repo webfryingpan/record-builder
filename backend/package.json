@@ -1,6 +1,6 @@
 {
 	"scripts": {
-		"build": "esbuild src/index.ts --bundle --platform=node --packages=bundle --outfile=dist/index.cjs --minify",
+		"build": "esbuild src/app.ts --bundle --platform=node --packages=bundle --outfile=dist/index.cjs --minify",
 		"start:dev": "bun --hot run ./src/app.ts",
 		"start:prod": "node dist/index.cjs",
 		"start:migration:prod": "npx prisma migrate deploy && npm run start:prod"
